@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc",
-		"start": "yarn build && node dist/server.js"
+		"start": "yarn build && node dist/server.js",
+		"dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts"
 	},
 	"repository": "github:aNickzz/mcv-companion.git",
 	"author": "Nicholas Sorokin",
@@ -16,6 +17,11 @@
 	},
 	"homepage": "https://github.com/aNickzz/mcv-companion#readme",
 	"devDependencies": {
+		"@types/express": "^4.17.1",
+		"ts-node-dev": "^1.0.0-pre.43",
 		"typescript": "^3.6.4"
+	},
+	"dependencies": {
+		"express": "^4.17.1"
 	}
 }
