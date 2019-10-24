@@ -1,0 +1,41 @@
+{
+	"name": "mcv-companion-server",
+	"version": "1.0.0",
+	"description": "My webpack project",
+	"scripts": {
+		"build": "webpack",
+		"dev": "webpack-dev-server"
+	},
+	"repository": "github:aNickzz/mcv-companion.git",
+	"author": "Nicholas Sorokin",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/aNickzz/mcv-companion/issues"
+	},
+	"homepage": "https://github.com/aNickzz/mcv-companion#readme",
+	"dependencies": {
+		"jquery": "^3.4.1",
+		"react": "^16.11.0",
+		"react-dom": "^16.11.0",
+		"scss-loader": "^0.0.1",
+		"slick-carousel": "^1.8.1"
+	},
+	"devDependencies": {
+		"@types/jquery": "^3.3.31",
+		"@types/react": "^16.9.9",
+		"@types/react-dom": "^16.9.2",
+		"@types/slick-carousel": "^1.6.33",
+		"clean-webpack-plugin": "^3.0.0",
+		"css-loader": "^3.2.0",
+		"html-webpack-plugin": "^3.2.0",
+		"mini-css-extract-plugin": "^0.8.0",
+		"node-sass": "^4.13.0",
+		"sass-loader": "^8.0.0",
+		"style-loader": "^1.0.0",
+		"ts-loader": "^6.2.1",
+		"typescript": "^3.6.4",
+		"webpack": "^4.41.2",
+		"webpack-cli": "^3.3.9",
+		"webpack-dev-server": "^3.9.0"
+	}
+}
