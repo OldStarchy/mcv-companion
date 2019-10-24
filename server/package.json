@@ -1,0 +1,21 @@
+{
+	"name": "mcv-companion-server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc",
+		"start": "yarn build && node dist/server.js"
+	},
+	"repository": "github:aNickzz/mcv-companion.git",
+	"author": "Nicholas Sorokin",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/aNickzz/mcv-companion/issues"
+	},
+	"homepage": "https://github.com/aNickzz/mcv-companion#readme",
+	"devDependencies": {
+		"typescript": "^3.6.4"
+	}
+}
