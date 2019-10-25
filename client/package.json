@@ -3,8 +3,10 @@
 	"version": "1.0.0",
 	"description": "My webpack project",
 	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "webpack",
-		"dev": "webpack-dev-server"
+		"dev": "webpack-dev-server",
+		"lint": "echo ts & eslint ./src/**/*.ts & echo tsx & eslint ./src/**/*.tsx & echo scss & stylelint ./src/**/*.scss"
 	},
 	"repository": "github:aNickzz/mcv-companion.git",
 	"author": "Nicholas Sorokin",
@@ -18,18 +20,28 @@
 		"react": "^16.11.0",
 		"react-dom": "^16.11.0",
 		"scss-loader": "^0.0.1",
-		"slick-carousel": "^1.8.1"
+		"slick-carousel": "^1.8.1",
+		"stylelint": "^11.1.1",
+		"stylelint-config-recommended": "^3.0.0"
 	},
 	"devDependencies": {
 		"@types/jquery": "^3.3.31",
 		"@types/react": "^16.9.9",
 		"@types/react-dom": "^16.9.2",
 		"@types/slick-carousel": "^1.6.33",
+		"@typescript-eslint/eslint-plugin": "^2.5.0",
+		"@typescript-eslint/parser": "^2.5.0",
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^3.2.0",
+		"eslint": "^6.5.1",
+		"eslint-config-prettier": "^6.4.0",
+		"eslint-plugin-prettier": "^3.1.1",
+		"eslint-plugin-react": "^7.16.0",
 		"html-webpack-plugin": "^3.2.0",
 		"mini-css-extract-plugin": "^0.8.0",
 		"node-sass": "^4.13.0",
+		"prettier": "^1.18.2",
+		"prettier-eslint": "^9.0.0",
 		"sass-loader": "^8.0.0",
 		"style-loader": "^1.0.0",
 		"ts-loader": "^6.2.1",
@@ -37,5 +49,81 @@
 		"webpack": "^4.41.2",
 		"webpack-cli": "^3.3.9",
 		"webpack-dev-server": "^3.9.0"
+	},
+	"eslintConfig": {
+		"parser": "@typescript-eslint/parser",
+		"extends": [
+			"plugin:react/recommended",
+			"plugin:@typescript-eslint/recommended",
+			"prettier/@typescript-eslint",
+			"plugin:prettier/recommended"
+		],
+		"parserOptions": {
+			"sourceType": "module",
+			"ecmaVersion": 2018
+		},
+		"plugins": [
+			"prettier",
+			"react"
+		],
+		"rules": {
+			"lines-between-class-members": [
+				"error",
+				"always",
+				{
+					"exceptAfterSingleLine": true
+				}
+			],
+			"@typescript-eslint/interface-name-prefix": [
+				"error",
+				{
+					"prefixWithI": "always"
+				}
+			],
+			"@typescript-eslint/no-non-null-assertion": "off",
+			"@typescript-eslint/no-unused-vars": "off",
+			"@typescript-eslint/explicit-function-return-type": "off"
+		},
+		"settings": {
+			"react": {
+				"version": "detect"
+			}
+		}
+	},
+	"prettier": {
+		"semi": true,
+		"trailingComma": "all",
+		"singleQuote": true,
+		"printWidth": 120,
+		"useTabs": true
+	},
+	"stylelint": {
+		"extends": "stylelint-config-recommended",
+		"rules": {
+			"at-rule-no-unknown": [
+				true,
+				{
+					"ignoreAtRules": [
+						"extends"
+					]
+				}
+			],
+			"block-no-empty": null,
+			"unit-whitelist": [
+				"em",
+				"rem",
+				"s"
+			],
+			"selector-pseudo-class-no-unknown": [
+				true,
+				{
+					"ignorePseudoClasses": [
+						"global",
+						"local",
+						"export"
+					]
+				}
+			]
+		}
 	}
 }

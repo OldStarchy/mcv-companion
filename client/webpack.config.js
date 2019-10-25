@@ -1,8 +1,8 @@
-const path = require('path');
-const webpack = require('webpack');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import path from 'path';
+import webpack from 'webpack';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 const isDevelopment = true;
 
@@ -38,9 +38,7 @@ module.exports = {
 			{
 				test: /\.module\.s(a|c)ss$/,
 				loader: [
-					isDevelopment
-						? 'style-loader'
-						: MiniCssExtractPlugin.loader,
+					isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
 					{
 						loader: 'css-loader',
 						options: {
@@ -60,9 +58,7 @@ module.exports = {
 				test: /\.s(a|c)ss$/,
 				exclude: /\.module.(s(a|c)ss)$/,
 				loader: [
-					isDevelopment
-						? 'style-loader'
-						: MiniCssExtractPlugin.loader,
+					isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
 					'css-loader',
 					{
 						loader: 'sass-loader',

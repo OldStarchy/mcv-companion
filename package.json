@@ -7,7 +7,11 @@
 		"dev": "concurrently --kill-others-on-fail \"yarn dev:server\" \"yarn dev:client\"",
 		"build:client": "cd client && yarn build",
 		"start:server": "cd server && yarn start",
-		"start": "yarn build:client && yarn start:server"
+		"start": "yarn build:client && yarn start:server",
+		"postinstall": "cd client && yarn install && cd ../server && yarn install",
+		"lint:client": "cd client && yarn lint",
+		"lint:server": "cd server && yarn lint",
+		"lint": "yarn lint:client & yarn lint:server"
 	},
 	"repository": "github:aNickzz/mcv-companion",
 	"author": "Nicholas Sorokin <nicholas.sorokin@hotmail.com>",
