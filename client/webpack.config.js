@@ -1,14 +1,41 @@
-import path from 'path';
-import webpack from 'webpack';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path');
+const webpack = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const fs = require('fs');
 
 const isDevelopment = true;
 
+const entries = {};
+const htmlPlugins = [];
+
+const pagesDir = path.resolve('./src/pages');
+
+fs.readdirSync(pagesDir).forEach(fname => {
+	if (fs.statSync(path.join(pagesDir, fname)).isFile()) {
+		if (/\.tsx?$/.test(fname)) {
+			const noext = fname.replace(/\.tsx?$/, '');
+
+			entries[noext] = path.join(pagesDir, fname);
+
+			if (fs.existsSync(path.join(pagesDir, `${noext}.html`))) {
+				htmlPlugins.push(
+					new HtmlWebpackPlugin({
+						chunks: [noext],
+						template: path.join(pagesDir, `${noext}.html`),
+						filename: `${noext}.html`,
+					}),
+				);
+			}
+		}
+	}
+});
+
 module.exports = {
 	mode: 'development',
-	entry: './src/index.tsx',
+	entry: entries,
 
 	output: {
 		filename: '[name].[chunkhash].js',
@@ -18,9 +45,7 @@ module.exports = {
 	plugins: [
 		new CleanWebpackPlugin(),
 		new webpack.ProgressPlugin(),
-		new HtmlWebpackPlugin({
-			template: path.resolve(__dirname, 'src', 'index.html'),
-		}),
+		...htmlPlugins,
 		new MiniCssExtractPlugin({
 			filename: isDevelopment ? '[name].css' : '[name].[hash].css',
 			chunkFilename: isDevelopment ? '[id].css' : '[id].[hash].css',
