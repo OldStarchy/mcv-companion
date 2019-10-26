@@ -6,8 +6,9 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc",
+		"watch": "tsc -w",
 		"start": "yarn build && node dist/server.js",
-		"dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
+		"dev": "ts-node-dev --respawn --transpileOnly --inspect=9230 --  ./src/server.ts",
 		"lint": "eslint ./src/**/*.ts"
 	},
 	"repository": "github:aNickzz/mcv-companion.git",
