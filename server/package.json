@@ -32,7 +32,8 @@
 	},
 	"dependencies": {
 		"express": "^4.17.1",
-		"express-session": "^1.17.0"
+		"express-session": "^1.17.0",
+		"modern-rcon": "^1.0.3"
 	},
 	"eslintConfig": {
 		"parser": "@typescript-eslint/parser",

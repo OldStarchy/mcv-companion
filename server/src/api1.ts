@@ -1,22 +1,29 @@
-import { IMinecraftClient } from './MinecraftClient';
-import { fail } from 'assert';
-import { stringify } from 'querystring';
+import { Injector } from './Injector';
+import Rcon from 'modern-rcon';
+import { Whitelist } from './Whitelist';
 
 type ApiOptions = {
 	base: string;
-	client: IMinecraftClient;
-	authenticator: IAuthenticator;
 };
 
 export interface IAuthenticator {
-	checkPassword(username: string, password: string): boolean;
+	checkPassword(username: string, password: string): Promise<boolean>;
 }
 
 export class Authenticator implements IAuthenticator {
-	constructor(private client: IMinecraftClient) {}
+	constructor(private client: Rcon) {}
 
-	checkPassword(username: string, password: string) {
-		if (this.client.whitelist.contains(username)) {
+	async checkPassword(username: string, password: string) {
+		const whitelist = new Whitelist(this.client);
+		const players = await whitelist.list();
+
+		// TODO: Check if whitelist is enabled.
+		if (players === null) {
+			return false;
+		}
+
+		username = username.toLowerCase();
+		if (players.some(player => player.toLowerCase() === username)) {
 			if (username === password) {
 				return true;
 			}
@@ -53,13 +60,13 @@ export class Api1 {
 	constructor(private readonly options: ApiOptions) {}
 
 	apply(app: import('express').Express) {
-		const { base, authenticator } = this.options;
+		const { base } = this.options;
 
 		app.post(`${base}/login`, (req, res) => {
 			const username = req.body.username;
 			const password = req.body.password;
 
-			const userSession = new UserSession(req.session!, authenticator);
+			const userSession = Injector.get('userSession', req.session) as UserSession;
 
 			if (userSession.login(username, password)) {
 				return res.send({
@@ -73,7 +80,7 @@ export class Api1 {
 		});
 
 		app.get(`${base}/logout`, (req, res) => {
-			const userSession = new UserSession(req.session!, authenticator);
+			const userSession = Injector.get('userSession', req.session) as UserSession;
 
 			userSession.logout().then(() =>
 				res.send({
@@ -83,7 +90,7 @@ export class Api1 {
 		});
 
 		app.get(`${base}/whoami`, (req, res) => {
-			const userSession = new UserSession(req.session!, authenticator);
+			const userSession = Injector.get('userSession', req.session) as UserSession;
 			return res.send({
 				message: userSession.currentUser() || 'nobody',
 			});
