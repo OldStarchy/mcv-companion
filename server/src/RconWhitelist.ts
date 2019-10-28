@@ -1,5 +1,6 @@
 import Rcon from 'modern-rcon';
 import { IWhitelist } from './IWhitelist';
+import { validatePlayerName } from './validatePlayerName';
 
 export class RconWhitelist implements IWhitelist {
 	constructor(private client: Rcon) {}
@@ -24,7 +25,7 @@ export class RconWhitelist implements IWhitelist {
 	 * @returns the name of the player added with correct casing, true if the player was already whitelisted, or false if the player could not be found.
 	 */
 	async add(name: string) {
-		if (name.trim() === '') {
+		if (!validatePlayerName(name)) {
 			throw new Error('Invalid name');
 		}
 
@@ -51,7 +52,7 @@ export class RconWhitelist implements IWhitelist {
 	 * @returns the name of the player removed with correct casing, true if the player was not already whitelisted, or false if the player could not be found.
 	 */
 	async remove(name: string) {
-		if (name.trim() === '') {
+		if (!validatePlayerName(name)) {
 			throw new Error('Invalid name');
 		}
 

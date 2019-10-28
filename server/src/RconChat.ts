@@ -1,11 +1,11 @@
 import Rcon from 'modern-rcon';
-import { TellrawCmd } from './TellrawRichText';
+import { RichText } from './RichText';
 
 export class RconChat {
 	constructor(private client: Rcon, private from: string) {}
 
 	async broadcast(message: string) {
-		const cmdJson: TellrawCmd = [
+		const cmdJson: RichText = [
 			{ text: '<' },
 			{ text: this.from, color: 'dark_green' },
 			{ text: ' (' },
@@ -22,7 +22,7 @@ export class RconChat {
 			throw Error('invalid to');
 		}
 
-		const cmdJson: TellrawCmd = [
+		const cmdJson: RichText = [
 			{
 				text: this.from,
 				color: 'gray',

@@ -2,6 +2,7 @@ import { Injector } from './Injector';
 import Rcon from 'modern-rcon';
 import { RconWhitelist } from './RconWhitelist';
 import { RconChat } from './RconChat';
+import { RconTitle } from './RconTitle';
 
 type ApiOptions = {
 	base: string;
@@ -70,16 +71,29 @@ export class Api1 {
 			const rcon = Injector.get('rcon') as Rcon;
 			await rcon.connect();
 
-			const userSession = new UserSession(req.session!, new Authenticator(rcon));
+			try {
+				const userSession = new UserSession(req.session!, new Authenticator(rcon));
 
-			if (userSession.login(username, password)) {
-				res.send({
-					message: 'OK',
-				});
-			} else {
-				res.send({
-					message: 'nope',
-				});
+				const title = new RconTitle(rcon);
+				title.announce('Someone logged in', [
+					{ text: 'it was ' },
+					{
+						text: username,
+						color: 'dark_green',
+					},
+				]);
+
+				if (userSession.login(username, password)) {
+					res.send({
+						message: 'OK',
+					});
+				} else {
+					res.send({
+						message: 'nope',
+					});
+				}
+			} finally {
+				rcon.disconnect();
 			}
 		});
 

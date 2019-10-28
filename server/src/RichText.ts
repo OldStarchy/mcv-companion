@@ -1,4 +1,4 @@
-export type TellrawRichText = {
+export type RichTextObj = {
 	text: string;
 	color?:
 		| 'black'
@@ -25,4 +25,4 @@ export type TellrawRichText = {
 	strikethrough?: boolean;
 };
 
-export type TellrawCmd = string | TellrawRichText | Array<string | TellrawRichText>;
+export type RichText = string | RichTextObj | Array<string | RichTextObj>;
