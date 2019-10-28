@@ -1,6 +1,7 @@
 import { Injector } from './Injector';
 import Rcon from 'modern-rcon';
-import { Whitelist } from './Whitelist';
+import { RconWhitelist } from './RconWhitelist';
+import { RconChat } from './RconChat';
 
 type ApiOptions = {
 	base: string;
@@ -14,7 +15,7 @@ export class Authenticator implements IAuthenticator {
 	constructor(private client: Rcon) {}
 
 	async checkPassword(username: string, password: string) {
-		const whitelist = new Whitelist(this.client);
+		const whitelist = new RconWhitelist(this.client);
 		const players = await whitelist.list();
 
 		// TODO: Check if whitelist is enabled.
@@ -45,7 +46,7 @@ export class UserSession {
 		return false;
 	}
 
-	currentUser() {
+	currentUser(): string {
 		return this.session!.loggedIn;
 	}
 
@@ -62,21 +63,24 @@ export class Api1 {
 	apply(app: import('express').Express) {
 		const { base } = this.options;
 
-		app.post(`${base}/login`, (req, res) => {
+		app.post(`${base}/login`, async (req, res) => {
 			const username = req.body.username;
 			const password = req.body.password;
 
-			const userSession = Injector.get('userSession', req.session) as UserSession;
+			const rcon = Injector.get('rcon') as Rcon;
+			await rcon.connect();
+
+			const userSession = new UserSession(req.session!, new Authenticator(rcon));
 
 			if (userSession.login(username, password)) {
-				return res.send({
+				res.send({
 					message: 'OK',
 				});
+			} else {
+				res.send({
+					message: 'nope',
+				});
 			}
-
-			return res.send({
-				message: 'nope',
-			});
 		});
 
 		app.get(`${base}/logout`, (req, res) => {
@@ -91,9 +95,86 @@ export class Api1 {
 
 		app.get(`${base}/whoami`, (req, res) => {
 			const userSession = Injector.get('userSession', req.session) as UserSession;
-			return res.send({
+
+			res.send({
 				message: userSession.currentUser() || 'nobody',
 			});
+		});
+
+		app.get(`${base}/whitelist`, async (req, res) => {
+			//TODO: require login and permission
+
+			const rcon = Injector.get('rcon') as Rcon;
+			await rcon.connect();
+
+			try {
+				const whitelist = new RconWhitelist(rcon);
+
+				res.send({
+					players: await whitelist.list(),
+				});
+			} finally {
+				rcon.disconnect();
+			}
+		});
+
+		app.post(`${base}/broadcast`, async (req, res) => {
+			const message = req.body.message;
+			const userSession = Injector.get('userSession', req.session) as UserSession;
+
+			if (userSession.currentUser() === undefined) {
+				res.send({
+					error: 'not logged in',
+				});
+				return;
+			}
+
+			const rcon = Injector.get('rcon') as Rcon;
+			await rcon.connect();
+
+			try {
+				const chat = new RconChat(rcon, userSession.currentUser());
+
+				await chat.broadcast(message);
+				res.send({
+					message: 'ok',
+				});
+			} finally {
+				rcon.disconnect();
+			}
+		});
+
+		app.post(`${base}/whisper`, async (req, res) => {
+			const to = req.body.to;
+			const message = req.body.message;
+			const userSession = Injector.get('userSession', req.session) as UserSession;
+
+			if (userSession.currentUser() === undefined) {
+				res.send({
+					error: 'not logged in',
+				});
+				return;
+			}
+
+			const rcon = Injector.get('rcon') as Rcon;
+			await rcon.connect();
+
+			try {
+				const chat = new RconChat(rcon, userSession.currentUser());
+
+				const result = await chat.whisper(to, message);
+				if (result) {
+					res.send({
+						message: 'ok',
+					});
+				} else {
+					res.send({
+						error: 'player not found',
+					});
+				}
+			} finally {
+				rcon.disconnect();
+			}
 		});
 	}
 }

@@ -1,11 +1,11 @@
 export class Injector {
 	static factories: {
 		[serviceName: string]: (...args: unknown[]) => unknown;
-	};
+	} = {};
 
 	static cache: {
 		[serviceName: string]: unknown;
-	};
+	} = {};
 
 	static use(name: string, factory: (...args: unknown[]) => unknown) {
 		this.factories[name] = factory;

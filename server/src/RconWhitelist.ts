@@ -1,6 +1,7 @@
 import Rcon from 'modern-rcon';
+import { IWhitelist } from './IWhitelist';
 
-export class Whitelist {
+export class RconWhitelist implements IWhitelist {
 	constructor(private client: Rcon) {}
 
 	async list() {
